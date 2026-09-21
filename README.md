@@ -8,7 +8,6 @@ OpenAI 兼容网关,把国内**永久免费**大模型 API 包装成标准 OpenA
 |---|---|---|
 | 智谱 GLM | `glm-4-flash` | `GLM_API_KEY` |
 | 硅基流动 SiliconFlow | `Qwen/Qwen3-8B` | `SILICONFLOW_API_KEY` |
-| 百度千帆 | `ernie-speed-128k` | `BAIDU_API_KEY` |
 
 ## 快速开始
 
@@ -20,7 +19,6 @@ pip install -e ".[dev]"
 # 2. 配置 API key
 export GLM_API_KEY=sk-xxx
 export SILICONFLOW_API_KEY=sk-xxx
-export BAIDU_API_KEY=sk-xxx
 # 可选:复制并编辑 config.example.yaml -> config.yaml
 
 # 3. 启动(默认 127.0.0.1:8000)
@@ -68,7 +66,7 @@ resp, err := client.CreateChatCompletion(ctx, openai.ChatCompletionRequest{
 ### 模型选择
 
 - `model: "auto"` — 自动加权选可用 provider(跳过熔断)。
-- 指定模型名(`glm-4-flash` / `Qwen/Qwen3-8B` / `ernie-speed-128k`)或 provider 名(`glm` / `siliconflow` / `baidu`)。
+- 指定模型名(`glm-4-flash` / `Qwen/Qwen3-8B`)或 provider 名(`glm` / `siliconflow`)。
 - `GET /v1/models` 列出可用模型。
 
 ## 管理台
@@ -93,7 +91,7 @@ pytest -q
 
 | 变量 | 说明 | 默认 |
 |---|---|---|
-| `GLM_API_KEY` / `SILICONFLOW_API_KEY` / `BAIDU_API_KEY` | 上游 API key | — |
+| `GLM_API_KEY` / `SILICONFLOW_API_KEY` | 上游 API key | — |
 | `GATEWAY_CONFIG` | 配置文件路径 | `config.yaml` |
 | `GATEWAY_DB` | SQLite 路径 | `./data/tasks.db` |
 | `GATEWAY_WORKERS` | 批量 worker 数 | `4` |

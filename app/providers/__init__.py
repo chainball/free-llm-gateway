@@ -12,14 +12,12 @@ from .base import (
     ServerError,
     TimeoutError,
 )
-from .baidu import BaiduProvider
 from .glm import GLMProvider
 from .siliconflow import SiliconFlowProvider
 
 _REGISTRY: dict[str, type[Provider]] = {
     "glm": GLMProvider,
     "siliconflow": SiliconFlowProvider,
-    "baidu": BaiduProvider,
 }
 
 
@@ -39,6 +37,5 @@ __all__ = [
     "OpenAICompatProvider",
     "GLMProvider",
     "SiliconFlowProvider",
-    "BaiduProvider",
     "build_provider",
 ]

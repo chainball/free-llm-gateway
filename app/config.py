@@ -55,15 +55,6 @@ _DEFAULTS: dict[str, dict[str, Any]] = {
         "tpm": 100_000,
         "weight": 1,
     },
-    "baidu": {
-        "base_url": "https://qianfan.baidubce.com/v2",
-        "models": ["ernie-speed-128k"],
-        "env": ["BAIDU_API_KEY"],
-        "concurrency": 2,
-        "rpm": 15,
-        "tpm": 100_000,
-        "weight": 1,
-    },
 }
 
 
