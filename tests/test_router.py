@@ -31,9 +31,17 @@ async def test_failover_on_server_error():
     a = make_runtime("a", ["m1"], fail=ServerError("boom"))
     b = make_runtime("b", ["m1"], respond="from-b")
     router = Router([a, b])
-    content, used = await router.complete("m1", [{"role": "user", "content": "hi"}])
+    content, used, failover = await router.complete("m1", [{"role": "user", "content": "hi"}])
     assert content == "from-b"
     assert used.cfg.name == "b"
+    assert failover is True
+
+
+async def test_no_failover_on_first_success():
+    router = Router([make_runtime("a", ["m1"], respond="ok")])
+    content, used, failover = await router.complete("m1", [{"role": "user", "content": "hi"}])
+    assert content == "ok"
+    assert failover is False
 
 
 async def test_badrequest_not_failover():

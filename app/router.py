@@ -128,19 +128,26 @@ class Router:
         *,
         temperature: float = 0.7,
         max_tokens: int = 2048,
-    ) -> tuple[str, ProviderRuntime]:
-        """Run a completion with retry + failover across providers."""
+    ) -> tuple[str, ProviderRuntime, bool]:
+        """Run a completion with retry + failover across providers.
+
+        Returns (content, runtime, failover) where failover is True when at
+        least one earlier provider was attempted and did not succeed.
+        """
         candidates = self.resolve(model)
         if not candidates:
             raise self._empty_reason(model)
 
         est = estimate_tokens(messages, max_tokens)
         last_err: ProviderError | None = None
+        attempted = 0
 
         for rt in candidates:
+            made_attempt = False
             for attempt in range(max(1, rt.cfg.max_retries)):
                 if rt.melted:
                     break
+                made_attempt = True
                 try:
                     async with rt.limiter:
                         await rt.limiter.wait(est)
@@ -149,7 +156,7 @@ class Router:
                             temperature=temperature, max_tokens=max_tokens,
                         )
                     rt.record_success()
-                    return content, rt
+                    return content, rt, attempted > 0
                 except BadRequestError:
                     raise
                 except AuthError as e:
@@ -161,6 +168,8 @@ class Router:
                     rt.record_failure()
                     if attempt < rt.cfg.max_retries - 1:
                         await asyncio.sleep(backoff_delay(attempt))
+            if made_attempt:
+                attempted += 1
 
         if last_err is not None:
             raise last_err

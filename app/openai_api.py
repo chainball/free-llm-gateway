@@ -66,7 +66,7 @@ async def chat_completions(req: ChatCompletionRequest, request: Request):
         )
 
     try:
-        content, rt = await app_router.complete(
+        content, rt, failover = await app_router.complete(
             req.model, messages, temperature=temperature, max_tokens=max_tokens
         )
     except ProviderError as e:
@@ -75,7 +75,7 @@ async def chat_completions(req: ChatCompletionRequest, request: Request):
     actual = _actual_model(req.model, rt)
     prompt_tokens = max(1, sum(len(str(m.get("content", ""))) for m in messages) // 4)
     completion_tokens = max(1, len(content) // 4)
-    return ChatCompletion(
+    completion = ChatCompletion(
         id=new_id("chatcmpl"),
         created=now(),
         model=actual,
@@ -86,6 +86,12 @@ async def chat_completions(req: ChatCompletionRequest, request: Request):
             total_tokens=prompt_tokens + completion_tokens,
         ),
     )
+    headers = {
+        "X-Provider": rt.cfg.name,
+        "X-Model": actual,
+        "X-Failover": "true" if failover else "false",
+    }
+    return JSONResponse(content=completion.model_dump(), headers=headers)
 
 
 async def _stream(req: ChatCompletionRequest, app_router, messages, temperature, max_tokens):

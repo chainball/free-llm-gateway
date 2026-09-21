@@ -69,7 +69,7 @@ class Worker:
         max_tokens = body.get("max_tokens", 2048) if body.get("max_tokens") is not None else 2048
 
         try:
-            content, rt = await self.router.complete(
+            content, rt, _failover = await self.router.complete(
                 model, messages, temperature=temperature, max_tokens=max_tokens
             )
         except (BadRequestError, UnknownModelError) as e:

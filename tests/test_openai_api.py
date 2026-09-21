@@ -36,3 +36,14 @@ async def test_unknown_model_404(gateway):
         json={"model": "nope", "messages": [{"role": "user", "content": "hi"}]},
     )
     assert r.status_code == 404
+
+
+async def test_chat_headers(gateway):
+    r = await gateway.client.post(
+        "/v1/chat/completions",
+        json={"model": "auto", "messages": [{"role": "user", "content": "hi"}]},
+    )
+    assert r.status_code == 200
+    assert r.headers["x-provider"] == "fake"
+    assert r.headers["x-model"] == "fake-model"
+    assert r.headers["x-failover"] == "false"
