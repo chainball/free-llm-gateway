@@ -16,7 +16,10 @@ OpenAI 兼容网关,把国内**永久免费**大模型 API 包装成标准 OpenA
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 
-# 2. 配置 API key
+# 2. 配置 API key(二选一)
+#    a) .env 文件:复制 .env.example -> .env,填入 key(推荐,.env 不入 git)
+cp .env.example .env && vim .env
+#    b) 环境变量:
 export GLM_API_KEY=sk-xxx
 export SILICONFLOW_API_KEY=sk-xxx
 # 可选:复制并编辑 config.example.yaml -> config.yaml
@@ -92,6 +95,7 @@ pytest -q
 | 变量 | 说明 | 默认 |
 |---|---|---|
 | `GLM_API_KEY` / `SILICONFLOW_API_KEY` | 上游 API key | — |
+| `GATEWAY_ENV` | .env 文件路径 | `.env` |
 | `GATEWAY_CONFIG` | 配置文件路径 | `config.yaml` |
 | `GATEWAY_DB` | SQLite 路径 | `./data/tasks.db` |
 | `GATEWAY_WORKERS` | 批量 worker 数 | `4` |

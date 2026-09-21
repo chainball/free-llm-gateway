@@ -12,6 +12,27 @@ import yaml
 _ENV_RE = re.compile(r"\$\{([A-Z0-9_]+)\}")
 
 
+def load_dotenv(path: Path | None = None) -> None:
+    """Load KEY=VALUE pairs from a .env file into os.environ.
+
+    Existing environment variables win (setdefault), so real env can override
+    the file. Values may be quoted; comments (#) and blank lines are ignored.
+    """
+    if path is None:
+        path = Path(os.environ.get("GATEWAY_ENV", ".env"))
+    if not path.exists():
+        return
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        key = key.strip()
+        value = value.strip().strip("\"'")
+        if key:
+            os.environ.setdefault(key, value)
+
+
 @dataclass
 class ProviderConfig:
     name: str
@@ -77,6 +98,7 @@ def _load_yaml(path: Path | None) -> dict[str, Any]:
 
 def build_providers(config_path: Path | None = None) -> list[ProviderConfig]:
     """Merge YAML config over built-in defaults, resolving env keys."""
+    load_dotenv()
     data = _load_yaml(config_path)
     providers_raw: dict[str, dict[str, Any]] = data.get("providers", {})
 
