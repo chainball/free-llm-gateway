@@ -54,3 +54,11 @@ async def test_empty_unknown_model():
     router = Router([make_runtime("a", ["m1"], enabled=False)])
     with pytest.raises(UnknownModelError):
         await router.complete("nope", [{"role": "user", "content": "hi"}])
+
+
+def test_resolve_model_auto_maps_to_provider_model():
+    router = Router([make_runtime("a", ["m1"])])
+    rt = router.runtimes[0]
+    assert router._resolve_model("auto", rt) == "m1"
+    assert router._resolve_model("", rt) == "m1"
+    assert router._resolve_model("m1", rt) == "m1"

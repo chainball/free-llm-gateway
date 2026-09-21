@@ -111,6 +111,11 @@ class Router:
     def _known(self, model: str) -> bool:
         return any(model in rt.cfg.models or rt.cfg.name == model for rt in self.runtimes)
 
+    def _resolve_model(self, model: str, rt: ProviderRuntime) -> str:
+        if model in ("", "auto"):
+            return rt.cfg.models[0] if rt.cfg.models else rt.cfg.name
+        return model
+
     def _empty_reason(self, model: str) -> ProviderError:
         if model in ("", "auto") or self._known(model):
             return NoProviderError(f"no provider available for {model!r} (all disabled or no key)")
@@ -140,7 +145,7 @@ class Router:
                     async with rt.limiter:
                         await rt.limiter.wait(est)
                         content = await rt.provider.chat(
-                            messages, model or rt.cfg.models[0],
+                            messages, self._resolve_model(model, rt),
                             temperature=temperature, max_tokens=max_tokens,
                         )
                     rt.record_success()
@@ -184,7 +189,7 @@ class Router:
                 async with rt.limiter:
                     await rt.limiter.wait(est)
                     async for line in rt.provider.chat_stream(
-                        messages, model or rt.cfg.models[0],
+                        messages, self._resolve_model(model, rt),
                         temperature=temperature, max_tokens=max_tokens,
                     ):
                         yield line, rt
