@@ -7,7 +7,7 @@ OpenAI 兼容网关,把国内**永久免费**大模型 API 包装成标准 OpenA
 | Provider | 免费模型 | 环境变量 |
 |---|---|---|
 | 智谱 GLM | `glm-4-flash` | `GLM_API_KEY` |
-| 硅基流动 SiliconFlow | `Qwen/Qwen3-8B` | `SILICONFLOW_API_KEY` |
+| 硅基流动 SiliconFlow | `THUDM/GLM-4-9B-0414` | `SILICONFLOW_API_KEY` |
 
 ## 快速开始
 
@@ -69,7 +69,7 @@ resp, err := client.CreateChatCompletion(ctx, openai.ChatCompletionRequest{
 ### 模型选择
 
 - `model: "auto"` — 自动加权选可用 provider(跳过熔断)。
-- 指定模型名(`glm-4-flash` / `Qwen/Qwen3-8B`)或 provider 名(`glm` / `siliconflow`)。
+- 指定模型名(`glm-4-flash` / `THUDM/GLM-4-9B-0414`)或 provider 名(`glm` / `siliconflow`)。
 - `GET /v1/models` 列出可用模型。
 
 ## 管理台

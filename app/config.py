@@ -69,7 +69,7 @@ _DEFAULTS: dict[str, dict[str, Any]] = {
     },
     "siliconflow": {
         "base_url": "https://api.siliconflow.cn/v1",
-        "models": ["Qwen/Qwen3-8B"],
+        "models": ["THUDM/GLM-4-9B-0414"],
         "env": ["SILICONFLOW_API_KEY"],
         "concurrency": 2,
         "rpm": 15,
