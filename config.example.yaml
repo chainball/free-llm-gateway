@@ -23,7 +23,7 @@ providers:
   siliconflow:
     enabled: true
     base_url: https://api.siliconflow.cn/v1
-    models: [THUDM/GLM-4-9B-0414]   # 非 reasoning 模型,白名单非 DeepSeek
+    models: [THUDM/GLM-4-9B-0414]   # 免费额度模型
     concurrency: 2
     rpm: 15
     tpm: 100000

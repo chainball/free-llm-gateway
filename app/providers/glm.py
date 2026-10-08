@@ -1,4 +1,4 @@
-"""智谱 GLM (BigModel) — glm-4-flash 永久免费."""
+"""智谱 BigModel (GLM) — OpenAI 兼容上游，提供免费额度模型."""
 from __future__ import annotations
 
 from .base import OpenAICompatProvider
